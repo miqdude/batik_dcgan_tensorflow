@@ -16,7 +16,7 @@ import datetime
 slim = tf.contrib.slim
 
 HEIGHT, WIDTH, CHANNEL = 128, 128, 3
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 EPOCH = 5000
 version = 'newBatik'
 newPoke_path = './' + version
@@ -83,32 +83,32 @@ def generator(input, random_dim, is_train, reuse=False):
         # 8*8*256
         #Convolution, bias, activation, repeat! 
         conv2 = tf.layers.conv2d_transpose(act1, c8, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
-                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                            name='conv2')
         bn2 = tf.contrib.layers.batch_norm(conv2, is_training=is_train, epsilon=1e-5, decay = 0.9,  updates_collections=None, scope='bn2')
         act2 = tf.nn.relu(bn2, name='act2')
         # 16*16*128
         conv3 = tf.layers.conv2d_transpose(act2, c16, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
-                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                            name='conv3')
         bn3 = tf.contrib.layers.batch_norm(conv3, is_training=is_train, epsilon=1e-5, decay = 0.9,  updates_collections=None, scope='bn3')
         act3 = tf.nn.relu(bn3, name='act3')
         # 32*32*64
         conv4 = tf.layers.conv2d_transpose(act3, c32, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
-                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                            name='conv4')
         bn4 = tf.contrib.layers.batch_norm(conv4, is_training=is_train, epsilon=1e-5, decay = 0.9,  updates_collections=None, scope='bn4')
         act4 = tf.nn.relu(bn4, name='act4')
         # 64*64*32
         conv5 = tf.layers.conv2d_transpose(act4, c64, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
-                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                            name='conv5')
         bn5 = tf.contrib.layers.batch_norm(conv5, is_training=is_train, epsilon=1e-5, decay = 0.9,  updates_collections=None, scope='bn5')
         act5 = tf.nn.relu(bn5, name='act5')
         
         #128*128*3
         conv6 = tf.layers.conv2d_transpose(act5, output_dim, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
-                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                                           kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                            name='conv6')
         # bn6 = tf.contrib.layers.batch_norm(conv6, is_training=is_train, epsilon=1e-5, decay = 0.9,  updates_collections=None, scope='bn6')
         act6 = tf.nn.tanh(conv6, name='act6')
@@ -123,25 +123,25 @@ def discriminator(input, is_train, reuse=False):
 
         #Convolution, activation, bias, repeat! 
         conv1 = tf.layers.conv2d(input, c2, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
-                                 kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                                 kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                  name='conv1')
         bn1 = tf.contrib.layers.batch_norm(conv1, is_training = is_train, epsilon=1e-5, decay = 0.9,  updates_collections=None, scope = 'bn1')
         act1 = lrelu(conv1, n='act1')
          #Convolution, activation, bias, repeat! 
         conv2 = tf.layers.conv2d(act1, c4, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
-                                 kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                                 kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                  name='conv2')
         bn2 = tf.contrib.layers.batch_norm(conv2, is_training=is_train, epsilon=1e-5, decay = 0.9,  updates_collections=None, scope='bn2')
         act2 = lrelu(bn2, n='act2')
         #Convolution, activation, bias, repeat! 
         conv3 = tf.layers.conv2d(act2, c8, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
-                                 kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                                 kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                  name='conv3')
         bn3 = tf.contrib.layers.batch_norm(conv3, is_training=is_train, epsilon=1e-5, decay = 0.9,  updates_collections=None, scope='bn3')
         act3 = lrelu(bn3, n='act3')
          #Convolution, activation, bias, repeat! 
         conv4 = tf.layers.conv2d(act3, c16, kernel_size=[5, 5], strides=[2, 2], padding="SAME",
-                                 kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                                 kernel_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                  name='conv4')
         bn4 = tf.contrib.layers.batch_norm(conv4, is_training=is_train, epsilon=1e-5, decay = 0.9,  updates_collections=None, scope='bn4')
         act4 = lrelu(bn4, n='act4')
@@ -152,14 +152,14 @@ def discriminator(input, is_train, reuse=False):
       
         
         w2 = tf.get_variable('w2', shape=[fc1.shape[-1], 1], dtype=tf.float32,
-                             initializer=tf.truncated_normal_initializer(stddev=0.01))
+                             initializer=tf.truncated_normal_initializer(stddev=0.02))
         b2 = tf.get_variable('b2', shape=[1], dtype=tf.float32,
                              initializer=tf.constant_initializer(0.0))
 
         # wgan just get rid of the sigmoid
         logits = tf.add(tf.matmul(fc1, w2), b2, name='logits')
         # dcgan
-        acted_out = tf.nn.tanh(logits)
+        acted_out = tf.nn.sigmoid(logits)
         return logits #, acted_out
 
 
@@ -185,19 +185,8 @@ def train():
     t_vars = tf.trainable_variables()
     d_vars = [var for var in t_vars if 'dis' in var.name]
     g_vars = [var for var in t_vars if 'gen' in var.name]
-
-    
-    
-    #using RMSPropOptimezer
-    trainer_d = tf.train.RMSPropOptimizer(learning_rate=1e-4).minimize(d_loss, var_list=d_vars)
-    trainer_g = tf.train.RMSPropOptimizer(learning_rate=1e-4).minimize(g_loss, var_list=g_vars)
-    
-    #using Adamoptimeizer
-    # trainer_d = tf.train.AdamOptimizer(learning_rate=2e-4,beta1=0.5).minimize(d_loss, var_list=d_vars)
-    # trainer_g = tf.train.AdamOptimizer(learning_rate=2e-4,beta1=0.5).minimize(g_loss, var_list=g_vars)
-
-    
-    
+    trainer_d = tf.train.RMSPropOptimizer(learning_rate=2e-4).minimize(d_loss, var_list=d_vars)
+    trainer_g = tf.train.RMSPropOptimizer(learning_rate=2e-4).minimize(g_loss, var_list=g_vars)
     # clip discriminator weights
     d_clip = [v.assign(tf.clip_by_value(v, -0.01, 0.01)) for v in d_vars]
 
@@ -228,13 +217,13 @@ def train():
     for i in range(EPOCH):
         print("Running epoch {}/{}...".format(i, EPOCH))
         for j in range(batch_num):
-            print("j {}".format(j))
+            print(j)
             d_iters = 5
             g_iters = 1
 
             train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
             for k in range(d_iters):
-                print("Kd {}".format(k))
+                print(k)
                 train_image = sess.run(image_batch)
                 #wgan clip weights
                 sess.run(d_clip)
@@ -246,11 +235,10 @@ def train():
             # Update the generator
             for k in range(g_iters):
                 # train_noise = np.random.uniform(-1.0, 1.0, size=[batch_size, random_dim]).astype(np.float32)
-                print("Kg {}".format(k))                
                 _, gLoss = sess.run([trainer_g, g_loss],
                                     feed_dict={random_input: train_noise, is_train: True})
 
-            print ('train:[%d/%d],d_loss:%f,g_loss:%f' % (i, j, dLoss, gLoss))
+            # print 'train:[%d/%d],d_loss:%f,g_loss:%f' % (i, j, dLoss, gLoss)
             
         # save check point every 500 epoch
         if i%500 == 0:
@@ -265,8 +253,8 @@ def train():
             imgtest = sess.run(fake_image, feed_dict={random_input: sample_noise, is_train: False})
             # imgtest = imgtest * 255.0
             # imgtest.astype(np.uint8)
-            # save_images(imgtest, [8,8] ,newPoke_path + '/epoch' + str(i) + '.jpg')
-            save_images(imgtest,[8,8],"{}/epoch{}_dloss{}_gloss{}_.jpg".format(newPoke_path,i,dLoss,gLoss))
+            save_images(imgtest, [8,8] ,newPoke_path + '/epoch' + str(i) + '.jpg')
+            
             print('train:[%d],d_loss:%f,g_loss:%f' % (i, dLoss, gLoss))
     coord.request_stop()
     coord.join(threads)
